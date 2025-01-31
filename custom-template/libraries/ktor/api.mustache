@@ -36,6 +36,12 @@ fun Route.{{classname}}(api: {{classname}}) {
     * Returns: {{#responses}}{{^isDefault}}{{dataType}}{{/isDefault}}{{/responses}}
      */
     {{#lambda.lowercase}}{{httpMethod}}{{/lambda.lowercase}}("{{path}}") {
+     {{#queryParams}}
+        // val {{paramName}} = call.request.queryParameters["{{paramName}}"]
+        {{/queryParams}}
+        {{#bodyParam}}
+        // val requestBody = call.receive<{{dataType}}>()
+        {{/bodyParam}}
         // Call API method
         api.{{operationId}}(call)
     }
