@@ -6,6 +6,52 @@ package {{modelPackage}}
 
 {{#models}}
 {{#model}}
-{{#isEnum}}{{>enum_class}}{{/isEnum}}{{^isEnum}}{{>data_class}}{{/isEnum}}
+{{#isEnum}}
+{{>enum_class}}
+{{/isEnum}}
+{{^isEnum}}
+{{#oneOf}}
+
+/**
+ * Sealed interface for `oneOf` models in Kotlin
+ */
+import kotlinx.serialization.*
+import kotlinx.serialization.json.Json
+
+@Serializable
+sealed interface {{classname}} {
+    val type: String
+
+    companion object {
+        fun fromJson(json: String): {{classname}} {
+            return Json.decodeFromString(serializer(), json)
+        }
+    }
+}
+
+{{#oneOf}}
+{{#isPrimitiveType}}
+@Serializable
+@SerialName("Primitive{{datatype}}")
+data class Primitive{{datatype}}(
+    override val type: String = "{{datatype}}",
+    val value: {{datatype}}
+) : {{classname}}
+{{/isPrimitiveType}}
+
+{{^isPrimitiveType}}
+@Serializable
+@SerialName("{{.}}")
+data class {{.}}(
+    override val type: String = "{{.}}"
+) : {{classname}}
+{{/isPrimitiveType}}
+{{/oneOf}}
+
+{{/oneOf}}
+{{^oneOf}}
+{{>data_class}}
+{{/oneOf}}
+{{/isEnum}}
 {{/model}}
 {{/models}}
