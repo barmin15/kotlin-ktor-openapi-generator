@@ -2,6 +2,12 @@
 
 ---
 
+## **Test usage with edge cases**
+
+```bash
+openapi-generator generate -i ./openapi/edge-cases.yml -g kotlin-server -t ./custom-template -o ./generated
+```
+
 ## **1. Download Default Templates Or use this template**
 
 ```bash
