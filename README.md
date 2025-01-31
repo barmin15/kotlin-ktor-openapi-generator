@@ -5,7 +5,12 @@
 ## **Test usage with edge cases**
 
 ```bash
-openapi-generator generate -i ./openapi/edge-cases.yml -g kotlin-server -t ./custom-template -o ./generated
+openapi-generator-cli generate \
+    -i ./openapi/edge-cases.yml \
+    -g kotlin-server \
+    -t ./custom-template \
+    -o ./generated \
+    --additional-properties=useOneOfInterfaces=true,addOneOfInterfaceImports=true
 ```
 
 ## **1. Download Default Templates Or use this template**
@@ -71,6 +76,10 @@ authenticate("{{{name}}}") {
 ## **3. Generate ktor API code:**
 
 ```bash
-openapi-generator generate -i {yaml file path} -g kotlin-server -t {custom template path} -o {path for generation}
-
+openapi-generator-cli generate \
+    -i {yaml file path} \
+    -g kotlin-server \
+    -t {custom template path} \
+    -o {path for generation} \
+    --additional-properties=useOneOfInterfaces=true,addOneOfInterfaceImports=true
 ```
