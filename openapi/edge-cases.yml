@@ -63,7 +63,7 @@ paths:
                 selectedOption:
                   oneOf:
                     - type: string
-                      enum: [OPTION_A, OPTION_B]
+                    - enum: [ OPTION_A, OPTION_B ]
       responses:
         '200':
           description: "Returns oneOf enum in response body."
@@ -75,27 +75,11 @@ paths:
                   result:
                     oneOf:
                       - type: string
-                        enum: [RESULT_X, RESULT_Y]
+                      - enum: [ OPTION_A, OPTION_B ]
 
 components:
   schemas:
-    OptionalResponse:
-      type: object
-      properties:
-        optionalField:
-          type: string
-          nullable: true
-    OneOfEnumRequest:
-      type: object
-      properties:
-        selectedOption:
-          oneOf:
-            - type: string
-              enum: [OPTION_A, OPTION_B]
-    OneOfEnumResponse:
-      type: object
-      properties:
-        result:
-          oneOf:
-            - type: string
-              enum: [RESULT_X, RESULT_Y]
+    PostOneOfEnumRequestSelectedOption:
+      oneOf:
+        - type: string
+        - enum: [ OPTION_A, OPTION_B ]
