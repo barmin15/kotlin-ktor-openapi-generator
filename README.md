@@ -46,20 +46,26 @@ import {{packageName}}.infrastructure.ApiPrincipal
 
 {{#operations}}
 fun Route.{{classname}}(api: {{classname}}) {
-{{#operation}}
-{{#hasAuthMethods}}
-{{#authMethods}}
-authenticate("{{{name}}}") {
-{{/authMethods}}
-{{/hasAuthMethods}}
+    {{#operation}}
+    {{#hasAuthMethods}}
+        {{#authMethods}}
+    authenticate("{{{name}}}") {
+        {{/authMethods}}
+    {{/hasAuthMethods}}
 
     /**
      * API Operation: {{summary}}
      * Method: {{httpMethod}} {{path}}
      * Description: {{description}}
-     * Returns: {{#responses}}{{^isDefault}}{{dataType}}{{/isDefault}}{{/responses}}
+    * Returns: {{#responses}}{{^isDefault}}{{dataType}}{{/isDefault}}{{/responses}}
      */
     {{#lambda.lowercase}}{{httpMethod}}{{/lambda.lowercase}}("{{path}}") {
+     {{#queryParams}}
+        // val {{paramName}} = call.request.queryParameters["{{paramName}}"]
+        {{/queryParams}}
+        {{#bodyParam}}
+        // val requestBody = call.receive<{{dataType}}>()
+        {{/bodyParam}}
         // Call API method
         api.{{operationId}}(call)
     }
@@ -71,9 +77,72 @@ authenticate("{{{name}}}") {
     {{/operation}}
 }
 {{/operations}}
+
 ```
 
-## **3. Generate ktor API code:**
+## **3. Replace its model.mustache file contents with the following:**
+
+```kotlin
+{{>licenseInfo}}
+package {{modelPackage}}
+
+{{#imports}}import {{import}}
+{{/imports}}
+
+{{#models}}
+{{#model}}
+{{#isEnum}}
+{{>enum_class}}
+{{/isEnum}}
+{{^isEnum}}
+{{#oneOf}}
+
+/**
+ * Sealed interface for `oneOf` models in Kotlin
+ */
+import kotlinx.serialization.*
+        import kotlinx.serialization.json.Json
+
+        @Serializable
+        sealed interface {{classname}} {
+    val type: String
+
+    companion object {
+    fun fromJson(json: String): {{classname}} {
+        return Json.decodeFromString(serializer(), json)
+    }
+}
+}
+
+{{#oneOf}}
+{{#isPrimitiveType}}
+@Serializable
+@SerialName("Primitive{{datatype}}")
+data class Primitive{{datatype}}(
+        override val type: String = "{{datatype}}",
+val value: {{datatype}}
+) : {{classname}}
+{{/isPrimitiveType}}
+
+{{^isPrimitiveType}}
+@Serializable
+@SerialName("{{.}}")
+data class {{.}}(
+        override val type: String = "{{.}}"
+) : {{classname}}
+{{/isPrimitiveType}}
+{{/oneOf}}
+
+{{/oneOf}}
+{{^oneOf}}
+{{>data_class}}
+{{/oneOf}}
+{{/isEnum}}
+{{/model}}
+{{/models}}
+```
+
+## **4. Generate ktor API code:**
 
 ```bash
 openapi-generator-cli generate \
