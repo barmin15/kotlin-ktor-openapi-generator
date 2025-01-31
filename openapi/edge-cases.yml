@@ -1,0 +1,101 @@
+openapi: 3.0.3
+info:
+  title: Edge Case API
+  description: |
+    This API is designed to test edge cases in OpenAPI to Kotlin code generation.
+    It includes optional parameters, optional request bodies, and oneOf enum handling.
+  version: 1.0.0
+servers:
+  - url: https://api.testedgecases.com/
+
+tags:
+  - name: EdgeCases
+    description: Endpoints to test edge cases in API generation
+
+paths:
+  /optional-parameters:
+    get:
+      summary: "Endpoint with optional query and body parameters"
+      description: "This endpoint accepts an optional query parameter and an optional request body, and returns an optional field in JSON."
+      operationId: getOptionalParameters
+      parameters:
+        - name: optionalQuery
+          in: query
+          description: "An optional query parameter. If provided, it will be echoed in the response."
+          required: false
+          schema:
+            type: string
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                optionalBodyParam:
+                  type: string
+                  description: "An optional field in the request body."
+      responses:
+        '200':
+          description: "Returns an optional field in the JSON response."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  optionalResponse:
+                    type: string
+                    description: "An optional field in the response body."
+                    nullable: true
+
+  /oneof-enum:
+    post:
+      summary: "Endpoint handling oneOf enum in request and response"
+      description: "This endpoint accepts a request body containing a oneOf enum field and returns a response with a oneOf enum field."
+      operationId: postOneOfEnum
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                selectedOption:
+                  oneOf:
+                    - type: string
+                      enum: [OPTION_A, OPTION_B]
+      responses:
+        '200':
+          description: "Returns oneOf enum in response body."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    oneOf:
+                      - type: string
+                        enum: [RESULT_X, RESULT_Y]
+
+components:
+  schemas:
+    OptionalResponse:
+      type: object
+      properties:
+        optionalField:
+          type: string
+          nullable: true
+    OneOfEnumRequest:
+      type: object
+      properties:
+        selectedOption:
+          oneOf:
+            - type: string
+              enum: [OPTION_A, OPTION_B]
+    OneOfEnumResponse:
+      type: object
+      properties:
+        result:
+          oneOf:
+            - type: string
+              enum: [RESULT_X, RESULT_Y]
