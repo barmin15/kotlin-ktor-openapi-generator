@@ -27,7 +27,7 @@ import {{packageName}}.infrastructure.ApiPrincipal
  */
 interface {{classname}} {
     {{#operation}}
-    suspend fun {{operationId}}(call: ApplicationCall)
+    suspend fun {{operationId}}(call: ApplicationCall) //: {{#isArray}}List<{{/isArray}}{{#returnType}}{{{returnType}}}{{/returnType}}{{#isArray}}>{{/isArray}}
     {{/operation}}
 }
 
@@ -43,17 +43,10 @@ fun Route.{{classname}}(api: {{classname}}) {
      * API Operation: {{summary}}
      * Method: {{httpMethod}} {{path}}
      * Description: {{description}}
-     * Returns: {{#responses}}{{^isDefault}}{{dataType}}{{/isDefault}}{{/responses}}
+     * Returns: {{#responses}}{{^isDefault}}{{#isArray}}List<{{/isArray}}{{{dataType}}}{{#isArray}}>{{/isArray}}{{/isDefault}}{{/responses}}
      */
     {{#lambda.lowercase}}{{httpMethod}}{{/lambda.lowercase}}("{{path}}") {
-        {{#queryParams}}
-        // val {{paramName}} = call.request.queryParameters["{{paramName}}"]
-        {{/queryParams}}
-        {{#bodyParam}}
-        // val requestBody = call.receive<{{dataType}}>()
-        {{/bodyParam}}
-        // Call API method
-        api.{{operationId}}(call)
+        api.{{operationId}}(call) // Implementation will handle `call.respond`
     }
 
     {{#hasAuthMethods}}
