@@ -21,6 +21,16 @@ import {{packageName}}.infrastructure.ApiPrincipal
 {{/imports}}
 
 {{#operations}}
+/**
+ * {{classname}} Interface
+ * Defines API methods for {{classname}}
+ */
+interface {{classname}} {
+    {{#operation}}
+    suspend fun {{operationId}}(call: ApplicationCall)
+    {{/operation}}
+}
+
 fun Route.{{classname}}(api: {{classname}}) {
     {{#operation}}
     {{#hasAuthMethods}}
@@ -33,10 +43,10 @@ fun Route.{{classname}}(api: {{classname}}) {
      * API Operation: {{summary}}
      * Method: {{httpMethod}} {{path}}
      * Description: {{description}}
-    * Returns: {{#responses}}{{^isDefault}}{{dataType}}{{/isDefault}}{{/responses}}
+     * Returns: {{#responses}}{{^isDefault}}{{dataType}}{{/isDefault}}{{/responses}}
      */
     {{#lambda.lowercase}}{{httpMethod}}{{/lambda.lowercase}}("{{path}}") {
-     {{#queryParams}}
+        {{#queryParams}}
         // val {{paramName}} = call.request.queryParameters["{{paramName}}"]
         {{/queryParams}}
         {{#bodyParam}}
