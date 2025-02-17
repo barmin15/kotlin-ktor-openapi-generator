@@ -31,7 +31,7 @@ interface {{classname}} {
     {{/operation}}
 }
 
-fun Route.{{classname}}(api: {{classname}}) {
+fun Route.{{#lambda.camelcase}}{{classname}}{{/lambda.camelcase}}(api: {{classname}}) {
     {{#operation}}
     {{#hasAuthMethods}}
         {{#authMethods}}
@@ -46,12 +46,12 @@ fun Route.{{classname}}(api: {{classname}}) {
      * Returns: {{#responses}}{{^isDefault}}{{#isArray}}List<{{/isArray}}{{{dataType}}}{{#isArray}}>{{/isArray}}{{/isDefault}}{{/responses}}
      */
     {{#lambda.lowercase}}{{httpMethod}}{{/lambda.lowercase}}("{{path}}") {
-     {{#queryParams}}
-            // val {{paramName}} = call.request.queryParameters["{{paramName}}"]
-            {{/queryParams}}
-            {{#bodyParam}}
-            // val requestBody = call.receive<{{dataType}}>()
-            {{/bodyParam}}
+        {{#queryParams}}
+        // val {{paramName}} = call.request.queryParameters["{{paramName}}"]
+        {{/queryParams}}
+        {{#bodyParam}}
+        // val requestBody = call.receive<{{dataType}}>()
+        {{/bodyParam}}
         api.{{operationId}}(call) // Implementation will handle `call.respond`
     }
 
